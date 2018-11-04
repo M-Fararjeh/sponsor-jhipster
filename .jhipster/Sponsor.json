@@ -48,7 +48,7 @@
         {
             "relationshipType": "many-to-many",
             "otherEntityRelationshipName": "sponsor",
-            "relationshipName": "businessContact",
+            "relationshipName": "businessActivity",
             "otherEntityName": "businessActivity",
             "otherEntityField": "id",
             "ownerSide": true

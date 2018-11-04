@@ -56,9 +56,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label jhiTranslate="sponsorApp.sponsorSponsor.businessContact" for="field_businessContact">Business Contact</label>
-                    <select class="form-control" id="field_businessContact" multiple name="businessContact" [(ngModel)]="sponsor.businessContacts">
-                        <option [ngValue]="getSelected(sponsor.businessContacts, businessActivityOption)" *ngFor="let businessActivityOption of businessactivities; trackBy: trackBusinessActivityById">{{businessActivityOption.id}}</option>
+                    <label jhiTranslate="sponsorApp.sponsorSponsor.businessActivity" for="field_businessActivity">Business Activity</label>
+                    <select class="form-control" id="field_businessActivity" multiple name="businessActivity" [(ngModel)]="sponsor.businessActivities">
+                        <option [ngValue]="getSelected(sponsor.businessActivities, businessActivityOption)" *ngFor="let businessActivityOption of businessactivities; trackBy: trackBusinessActivityById">{{businessActivityOption.id}}</option>
                     </select>
                 </div>
             </div>

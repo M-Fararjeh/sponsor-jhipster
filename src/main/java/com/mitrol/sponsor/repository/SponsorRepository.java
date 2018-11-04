@@ -17,14 +17,14 @@ import java.util.Optional;
 @Repository
 public interface SponsorRepository extends JpaRepository<Sponsor, Long> {
 
-    @Query(value = "select distinct sponsor from Sponsor sponsor left join fetch sponsor.businessContacts",
+    @Query(value = "select distinct sponsor from Sponsor sponsor left join fetch sponsor.businessActivities",
         countQuery = "select count(distinct sponsor) from Sponsor sponsor")
     Page<Sponsor> findAllWithEagerRelationships(Pageable pageable);
 
-    @Query(value = "select distinct sponsor from Sponsor sponsor left join fetch sponsor.businessContacts")
+    @Query(value = "select distinct sponsor from Sponsor sponsor left join fetch sponsor.businessActivities")
     List<Sponsor> findAllWithEagerRelationships();
 
-    @Query("select sponsor from Sponsor sponsor left join fetch sponsor.businessContacts where sponsor.id =:id")
+    @Query("select sponsor from Sponsor sponsor left join fetch sponsor.businessActivities where sponsor.id =:id")
     Optional<Sponsor> findOneWithEagerRelationships(@Param("id") Long id);
 
 }

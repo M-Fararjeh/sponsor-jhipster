@@ -28,7 +28,7 @@ public class BusinessActivity implements Serializable {
     @Column(name = "activity_name")
     private String activityName;
 
-    @ManyToMany(mappedBy = "businessContacts")
+    @ManyToMany(mappedBy = "businessActivities")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnore
     private Set<Sponsor> sponsors = new HashSet<>();
@@ -66,13 +66,13 @@ public class BusinessActivity implements Serializable {
 
     public BusinessActivity addSponsor(Sponsor sponsor) {
         this.sponsors.add(sponsor);
-        sponsor.getBusinessContacts().add(this);
+        sponsor.getBusinessActivities().add(this);
         return this;
     }
 
     public BusinessActivity removeSponsor(Sponsor sponsor) {
         this.sponsors.remove(sponsor);
-        sponsor.getBusinessContacts().remove(this);
+        sponsor.getBusinessActivities().remove(this);
         return this;
     }
 
