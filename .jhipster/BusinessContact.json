@@ -1,0 +1,51 @@
+{
+    "name": "BusinessContact",
+    "fields": [
+        {
+            "fieldName": "firstName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "lastName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "personalPhone",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "workPhone",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "email",
+            "fieldType": "String"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipName": "sponsor",
+            "otherEntityName": "sponsor",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "profile",
+            "otherEntityName": "businessContactProfile",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "businessContact"
+        }
+    ],
+    "changelogDate": "20181104181334",
+    "entityTableName": "business_contact",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "sponsor",
+    "applications": "*",
+    "microserviceName": "sponsor"
+}

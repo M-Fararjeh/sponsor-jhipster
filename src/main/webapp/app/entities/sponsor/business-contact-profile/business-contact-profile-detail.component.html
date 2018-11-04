@@ -1,0 +1,39 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="businessContactProfile">
+            <h2><span jhiTranslate="sponsorApp.sponsorBusinessContactProfile.detail.title">Business Contact Profile</span> {{businessContactProfile.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="sponsorApp.sponsorBusinessContactProfile.attending">Attending</span></dt>
+                <dd>
+                    <span>{{businessContactProfile.attending}}</span>
+                </dd>
+                <dt><span jhiTranslate="sponsorApp.sponsorBusinessContactProfile.retention">Retention</span></dt>
+                <dd>
+                    <span>{{businessContactProfile.retention}}</span>
+                </dd>
+                <dt><span jhiTranslate="sponsorApp.sponsorBusinessContactProfile.customerService">Customer Service</span></dt>
+                <dd>
+                    <span>{{businessContactProfile.customerService}}</span>
+                </dd>
+                <dt><span jhiTranslate="sponsorApp.sponsorBusinessContactProfile.customerServiceSpecial">Customer Service Special</span></dt>
+                <dd>
+                    <span>{{businessContactProfile.customerServiceSpecial}}</span>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/business-contact-profile', businessContactProfile.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

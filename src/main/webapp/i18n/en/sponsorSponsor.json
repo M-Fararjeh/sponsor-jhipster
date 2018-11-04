@@ -1,0 +1,31 @@
+{
+  "sponsorApp": {
+    "sponsorSponsor": {
+      "home": {
+        "title": "Sponsors",
+        "createLabel": "Create a new Sponsor",
+        "createOrEditLabel": "Create or edit a Sponsor"
+      },
+      "created": "A new Sponsor is created with identifier {{ param }}",
+      "updated": "A Sponsor is updated with identifier {{ param }}",
+      "deleted": "A Sponsor is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Sponsor {{ id }}?"
+      },
+      "detail": {
+        "title": "Sponsor"
+      },
+      "name": "Name",
+      "address": "Address",
+      "city": "City",
+      "region": "Region",
+      "postalCode": "Postal Code",
+      "country": "Country",
+      "phone": "Phone",
+      "fax": "Fax",
+      "homePage": "Home Page",
+      "businessContact": "Business Contact",
+      "businessContact": "Business Contact"
+    }
+  }
+}

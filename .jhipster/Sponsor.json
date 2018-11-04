@@ -1,0 +1,67 @@
+{
+    "name": "Sponsor",
+    "fields": [
+        {
+            "fieldName": "name",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "address",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "city",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "region",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "postalCode",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "country",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "phone",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "fax",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "homePage",
+            "fieldType": "String"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "businessContact",
+            "otherEntityName": "businessContact",
+            "otherEntityRelationshipName": "sponsor"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityRelationshipName": "sponsor",
+            "relationshipName": "businessContact",
+            "otherEntityName": "businessActivity",
+            "otherEntityField": "id",
+            "ownerSide": true
+        }
+    ],
+    "changelogDate": "20181104181332",
+    "entityTableName": "sponsor",
+    "dto": "no",
+    "pagination": "infinite-scroll",
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "sponsor",
+    "applications": "*",
+    "microserviceName": "sponsor"
+}

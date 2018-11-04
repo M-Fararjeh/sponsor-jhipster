@@ -1,0 +1,28 @@
+{
+    "name": "BusinessActivity",
+    "fields": [
+        {
+            "fieldName": "activityName",
+            "fieldType": "String"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-many",
+            "relationshipName": "sponsor",
+            "otherEntityName": "sponsor",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "businessContact"
+        }
+    ],
+    "changelogDate": "20181104181333",
+    "entityTableName": "business_activity",
+    "dto": "no",
+    "pagination": "infinite-scroll",
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "sponsor",
+    "applications": "*",
+    "microserviceName": "sponsor"
+}
