@@ -1,0 +1,82 @@
+<div>
+    <h2 id="page-heading">
+        <span jhiTranslate="sponsorApp.sponsorBusinessContact.home.title">Business Contacts</span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-business-contact" [routerLink]="['/business-contact/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
+            <span  jhiTranslate="sponsorApp.sponsorBusinessContact.home.createLabel">
+            Create new Business Contact
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <br/>
+    <div class="table-responsive" *ngIf="businessContacts">
+        <table class="table table-striped">
+            <thead>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="firstName"><span jhiTranslate="sponsorApp.sponsorBusinessContact.firstName">First Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="lastName"><span jhiTranslate="sponsorApp.sponsorBusinessContact.lastName">Last Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="personalPhone"><span jhiTranslate="sponsorApp.sponsorBusinessContact.personalPhone">Personal Phone</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="workPhone"><span jhiTranslate="sponsorApp.sponsorBusinessContact.workPhone">Work Phone</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="email"><span jhiTranslate="sponsorApp.sponsorBusinessContact.email">Email</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="sponsor.id"><span jhiTranslate="sponsorApp.sponsorBusinessContact.sponsor">Sponsor</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="profile.id"><span jhiTranslate="sponsorApp.sponsorBusinessContact.profile">Profile</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let businessContact of businessContacts ;trackBy: trackId">
+                <td><a [routerLink]="['/business-contact', businessContact.id, 'view' ]">{{businessContact.id}}</a></td>
+                <td>{{businessContact.firstName}}</td>
+                <td>{{businessContact.lastName}}</td>
+                <td>{{businessContact.personalPhone}}</td>
+                <td>{{businessContact.workPhone}}</td>
+                <td>{{businessContact.email}}</td>
+                <td>
+                    <div *ngIf="businessContact.sponsor">
+                        <a [routerLink]="['../sponsor', businessContact.sponsor?.id, 'view' ]" >{{businessContact.sponsor?.id}}</a>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="businessContact.profile">
+                        <a [routerLink]="['../business-contact-profile', businessContact.profile?.id, 'view' ]" >{{businessContact.profile?.id}}</a>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['/business-contact', businessContact.id, 'view' ]"
+                                class="btn btn-info btn-sm">
+                            <fa-icon [icon]="'eye'"></fa-icon>
+                            <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/business-contact', businessContact.id, 'edit']"
+                                class="btn btn-primary btn-sm">
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                            <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'business-contact/'+ businessContact.id + '/delete'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-danger btn-sm">
+                            <fa-icon [icon]="'times'"></fa-icon>
+                            <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="businessContacts && businessContacts.length">
+        <div class="row justify-content-center">
+            <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+        </div>
+        <div class="row justify-content-center">
+            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,65 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="sponsor">
+            <h2><span jhiTranslate="sponsorApp.sponsorSponsor.detail.title">Sponsor</span> {{sponsor.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="sponsorApp.sponsorSponsor.name">Name</span></dt>
+                <dd>
+                    <span>{{sponsor.name}}</span>
+                </dd>
+                <dt><span jhiTranslate="sponsorApp.sponsorSponsor.address">Address</span></dt>
+                <dd>
+                    <span>{{sponsor.address}}</span>
+                </dd>
+                <dt><span jhiTranslate="sponsorApp.sponsorSponsor.city">City</span></dt>
+                <dd>
+                    <span>{{sponsor.city}}</span>
+                </dd>
+                <dt><span jhiTranslate="sponsorApp.sponsorSponsor.region">Region</span></dt>
+                <dd>
+                    <span>{{sponsor.region}}</span>
+                </dd>
+                <dt><span jhiTranslate="sponsorApp.sponsorSponsor.postalCode">Postal Code</span></dt>
+                <dd>
+                    <span>{{sponsor.postalCode}}</span>
+                </dd>
+                <dt><span jhiTranslate="sponsorApp.sponsorSponsor.country">Country</span></dt>
+                <dd>
+                    <span>{{sponsor.country}}</span>
+                </dd>
+                <dt><span jhiTranslate="sponsorApp.sponsorSponsor.phone">Phone</span></dt>
+                <dd>
+                    <span>{{sponsor.phone}}</span>
+                </dd>
+                <dt><span jhiTranslate="sponsorApp.sponsorSponsor.fax">Fax</span></dt>
+                <dd>
+                    <span>{{sponsor.fax}}</span>
+                </dd>
+                <dt><span jhiTranslate="sponsorApp.sponsorSponsor.homePage">Home Page</span></dt>
+                <dd>
+                    <span>{{sponsor.homePage}}</span>
+                </dd>
+                <dt><span jhiTranslate="sponsorApp.sponsorSponsor.businessContact">Business Contact</span></dt>
+                <dd>
+                    <span *ngFor="let businessContact of sponsor.businessContacts; let last = last">
+                        <a [routerLink]="['/business-activity', businessContact?.id, 'view' ]">{{businessContact.id}}</a>{{last ? '' : ', '}}
+                    </span>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/sponsor', sponsor.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,32 @@
+{
+    "name": "BusinessContactProfile",
+    "fields": [
+        {
+            "fieldName": "attending",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "retention",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "customerService",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "customerServiceSpecial",
+            "fieldType": "String"
+        }
+    ],
+    "relationships": [],
+    "changelogDate": "20181104181335",
+    "entityTableName": "business_contact_profile",
+    "dto": "no",
+    "pagination": "no",
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "sponsor",
+    "applications": "*",
+    "microserviceName": "sponsor"
+}

@@ -1,0 +1,63 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+            <h2 id="jhi-business-contact-heading" jhiTranslate="sponsorApp.sponsorBusinessContact.home.createOrEditLabel">Create or edit a Business Contact</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!businessContact.id">
+                    <label for="id" jhiTranslate="global.field.id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id"
+                        [(ngModel)]="businessContact.id" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="sponsorApp.sponsorBusinessContact.firstName" for="field_firstName">First Name</label>
+                    <input type="text" class="form-control" name="firstName" id="field_firstName"
+                        [(ngModel)]="businessContact.firstName" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="sponsorApp.sponsorBusinessContact.lastName" for="field_lastName">Last Name</label>
+                    <input type="text" class="form-control" name="lastName" id="field_lastName"
+                        [(ngModel)]="businessContact.lastName" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="sponsorApp.sponsorBusinessContact.personalPhone" for="field_personalPhone">Personal Phone</label>
+                    <input type="text" class="form-control" name="personalPhone" id="field_personalPhone"
+                        [(ngModel)]="businessContact.personalPhone" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="sponsorApp.sponsorBusinessContact.workPhone" for="field_workPhone">Work Phone</label>
+                    <input type="text" class="form-control" name="workPhone" id="field_workPhone"
+                        [(ngModel)]="businessContact.workPhone" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="sponsorApp.sponsorBusinessContact.email" for="field_email">Email</label>
+                    <input type="text" class="form-control" name="email" id="field_email"
+                        [(ngModel)]="businessContact.email" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="sponsorApp.sponsorBusinessContact.sponsor" for="field_sponsor">Sponsor</label>
+                    <select class="form-control" id="field_sponsor" name="sponsor" [(ngModel)]="businessContact.sponsor" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="sponsorOption.id === businessContact.sponsor?.id ? businessContact.sponsor : sponsorOption" *ngFor="let sponsorOption of sponsors; trackBy: trackSponsorById">{{sponsorOption.id}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="sponsorApp.sponsorBusinessContact.profile" for="field_profile">Profile</label>
+                    <select class="form-control" id="field_profile" name="profile" [(ngModel)]="businessContact.profile">
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="businessContactProfileOption.id === businessContact.profile?.id ? businessContact.profile : businessContactProfileOption" *ngFor="let businessContactProfileOption of profiles; trackBy: trackBusinessContactProfileById">{{businessContactProfileOption.id}}</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
