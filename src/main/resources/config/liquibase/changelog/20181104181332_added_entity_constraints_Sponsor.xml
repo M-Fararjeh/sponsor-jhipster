@@ -9,13 +9,13 @@
     <changeSet id="20181104181332-2" author="jhipster">
         
         <addForeignKeyConstraint baseColumnNames="sponsors_id"
-                                 baseTableName="sponsor_business_contact"
-                                 constraintName="fk_sponsor_business_contact_sponsors_id"
+                                 baseTableName="sponsor_business_activity"
+                                 constraintName="fk_sponsor_business_activity_sponsors_id"
                                  referencedColumnNames="id"
                                  referencedTableName="sponsor"/>
-        <addForeignKeyConstraint baseColumnNames="business_contacts_id"
-                                 baseTableName="sponsor_business_contact"
-                                 constraintName="fk_sponsor_business_contact_business_contacts_id"
+        <addForeignKeyConstraint baseColumnNames="business_activities_id"
+                                 baseTableName="sponsor_business_activity"
+                                 constraintName="fk_sponsor_business_activity_business_activities_id"
                                  referencedColumnNames="id"
                                  referencedTableName="business_activity"/>
         

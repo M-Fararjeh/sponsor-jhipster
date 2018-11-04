@@ -61,8 +61,8 @@
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
         
-        <createTable tableName="sponsor_business_contact">
-            <column name="business_contacts_id" type="bigint">
+        <createTable tableName="sponsor_business_activity">
+            <column name="business_activities_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
             <column name="sponsors_id" type="bigint">
@@ -70,7 +70,7 @@
             </column>
         </createTable>
 
-        <addPrimaryKey columnNames="sponsors_id, business_contacts_id" tableName="sponsor_business_contact"/>
+        <addPrimaryKey columnNames="sponsors_id, business_activities_id" tableName="sponsor_business_activity"/>
         
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->

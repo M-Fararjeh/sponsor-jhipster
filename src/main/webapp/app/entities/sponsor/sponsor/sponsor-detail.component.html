@@ -41,10 +41,10 @@
                 <dd>
                     <span>{{sponsor.homePage}}</span>
                 </dd>
-                <dt><span jhiTranslate="sponsorApp.sponsorSponsor.businessContact">Business Contact</span></dt>
+                <dt><span jhiTranslate="sponsorApp.sponsorSponsor.businessActivity">Business Activity</span></dt>
                 <dd>
-                    <span *ngFor="let businessContact of sponsor.businessContacts; let last = last">
-                        <a [routerLink]="['/business-activity', businessContact?.id, 'view' ]">{{businessContact.id}}</a>{{last ? '' : ', '}}
+                    <span *ngFor="let businessActivity of sponsor.businessActivities; let last = last">
+                        <a [routerLink]="['/business-activity', businessActivity?.id, 'view' ]">{{businessActivity.id}}</a>{{last ? '' : ', '}}
                     </span>
                 </dd>
             </dl>

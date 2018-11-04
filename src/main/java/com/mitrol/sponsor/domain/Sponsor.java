@@ -57,10 +57,10 @@ public class Sponsor implements Serializable {
     private Set<BusinessContact> businessContacts = new HashSet<>();
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @JoinTable(name = "sponsor_business_contact",
+    @JoinTable(name = "sponsor_business_activity",
                joinColumns = @JoinColumn(name = "sponsors_id", referencedColumnName = "id"),
-               inverseJoinColumns = @JoinColumn(name = "business_contacts_id", referencedColumnName = "id"))
-    private Set<BusinessActivity> businessContacts = new HashSet<>();
+               inverseJoinColumns = @JoinColumn(name = "business_activities_id", referencedColumnName = "id"))
+    private Set<BusinessActivity> businessActivities = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -213,29 +213,29 @@ public class Sponsor implements Serializable {
         this.businessContacts = businessContacts;
     }
 
-    public Set<BusinessActivity> getBusinessContacts() {
-        return businessContacts;
+    public Set<BusinessActivity> getBusinessActivities() {
+        return businessActivities;
     }
 
-    public Sponsor businessContacts(Set<BusinessActivity> businessActivities) {
-        this.businessContacts = businessActivities;
+    public Sponsor businessActivities(Set<BusinessActivity> businessActivities) {
+        this.businessActivities = businessActivities;
         return this;
     }
 
-    public Sponsor addBusinessContact(BusinessActivity businessActivity) {
-        this.businessContacts.add(businessActivity);
+    public Sponsor addBusinessActivity(BusinessActivity businessActivity) {
+        this.businessActivities.add(businessActivity);
         businessActivity.getSponsors().add(this);
         return this;
     }
 
-    public Sponsor removeBusinessContact(BusinessActivity businessActivity) {
-        this.businessContacts.remove(businessActivity);
+    public Sponsor removeBusinessActivity(BusinessActivity businessActivity) {
+        this.businessActivities.remove(businessActivity);
         businessActivity.getSponsors().remove(this);
         return this;
     }
 
-    public void setBusinessContacts(Set<BusinessActivity> businessActivities) {
-        this.businessContacts = businessActivities;
+    public void setBusinessActivities(Set<BusinessActivity> businessActivities) {
+        this.businessActivities = businessActivities;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

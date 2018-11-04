@@ -13,7 +13,7 @@ export interface ISponsor {
   fax?: string;
   homePage?: string;
   businessContacts?: IBusinessContact[];
-  businessContacts?: IBusinessActivity[];
+  businessActivities?: IBusinessActivity[];
 }
 
 export class Sponsor implements ISponsor {
@@ -29,6 +29,6 @@ export class Sponsor implements ISponsor {
     public fax?: string,
     public homePage?: string,
     public businessContacts?: IBusinessContact[],
-    public businessContacts?: IBusinessActivity[]
+    public businessActivities?: IBusinessActivity[]
   ) {}
 }

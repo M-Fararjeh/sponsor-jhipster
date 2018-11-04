@@ -12,7 +12,7 @@
             "relationshipName": "sponsor",
             "otherEntityName": "sponsor",
             "ownerSide": false,
-            "otherEntityRelationshipName": "businessContact"
+            "otherEntityRelationshipName": "businessActivity"
         }
     ],
     "changelogDate": "20181104181333",

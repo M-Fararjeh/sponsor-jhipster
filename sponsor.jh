@@ -39,7 +39,7 @@ relationship OneToMany {
 }
 
 relationship ManyToMany {
-	Sponsor{businessContact} to BusinessActivity{sponsor}
+	Sponsor{BusinessActivity} to BusinessActivity{sponsor}
 }
 
 paginate Sponsor, BusinessActivity with infinite-scroll
