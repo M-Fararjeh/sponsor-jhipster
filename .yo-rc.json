@@ -1,0 +1,38 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "com.mitrol.sponsor",
+      "nativeLanguage": "en"
+    },
+    "jhipsterVersion": "5.5.0",
+    "applicationType": "microservice",
+    "baseName": "sponsor",
+    "packageName": "com.mitrol.sponsor",
+    "packageFolder": "com/mitrol/sponsor",
+    "serverPort": "6616",
+    "authenticationType": "oauth2",
+    "cacheProvider": "hazelcast",
+    "enableHibernateCache": true,
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "h2Memory",
+    "prodDatabaseType": "mysql",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": "eureka",
+    "buildTool": "gradle",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "YmQ3NDZkYWQyMzRhYTk1NzhkNWYwNWQ2YzIyYjAyNzAxMmRmNWFkNDhlNjY0OTM3NjY1OGU1ZDQ0ODQyYWJkOTkwNzJjMjQ1YzRmMzhmZmM0NjEzMGI2YzNmZmIyNjM4YWFiNjZlOWQ4MGY1YmI4ZDg5ODg0MTE4NGU4N2ExNDM=",
+    "enableTranslation": true,
+    "languages": [
+      "en"
+    ],
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "otherModules": [],
+    "clientPackageManager": "npm",
+    "nativeLanguage": "en",
+    "skipClient": true,
+    "skipUserManagement": true
+  }
+}
