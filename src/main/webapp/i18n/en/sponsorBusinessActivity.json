@@ -1,0 +1,22 @@
+{
+  "sponsorApp": {
+    "sponsorBusinessActivity": {
+      "home": {
+        "title": "Business Activities",
+        "createLabel": "Create a new Business Activity",
+        "createOrEditLabel": "Create or edit a Business Activity"
+      },
+      "created": "A new Business Activity is created with identifier {{ param }}",
+      "updated": "A Business Activity is updated with identifier {{ param }}",
+      "deleted": "A Business Activity is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Business Activity {{ id }}?"
+      },
+      "detail": {
+        "title": "Business Activity"
+      },
+      "activityName": "Activity Name",
+      "sponsor": "Sponsor"
+    }
+  }
+}

@@ -1,0 +1,55 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="businessContact">
+            <h2><span jhiTranslate="sponsorApp.sponsorBusinessContact.detail.title">Business Contact</span> {{businessContact.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="sponsorApp.sponsorBusinessContact.firstName">First Name</span></dt>
+                <dd>
+                    <span>{{businessContact.firstName}}</span>
+                </dd>
+                <dt><span jhiTranslate="sponsorApp.sponsorBusinessContact.lastName">Last Name</span></dt>
+                <dd>
+                    <span>{{businessContact.lastName}}</span>
+                </dd>
+                <dt><span jhiTranslate="sponsorApp.sponsorBusinessContact.personalPhone">Personal Phone</span></dt>
+                <dd>
+                    <span>{{businessContact.personalPhone}}</span>
+                </dd>
+                <dt><span jhiTranslate="sponsorApp.sponsorBusinessContact.workPhone">Work Phone</span></dt>
+                <dd>
+                    <span>{{businessContact.workPhone}}</span>
+                </dd>
+                <dt><span jhiTranslate="sponsorApp.sponsorBusinessContact.email">Email</span></dt>
+                <dd>
+                    <span>{{businessContact.email}}</span>
+                </dd>
+                <dt><span jhiTranslate="sponsorApp.sponsorBusinessContact.sponsor">Sponsor</span></dt>
+                <dd>
+                    <div *ngIf="businessContact.sponsor">
+                        <a [routerLink]="['/sponsor', businessContact.sponsor?.id, 'view']">{{businessContact.sponsor?.id}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="sponsorApp.sponsorBusinessContact.profile">Profile</span></dt>
+                <dd>
+                    <div *ngIf="businessContact.profile">
+                        <a [routerLink]="['/business-contact-profile', businessContact.profile?.id, 'view']">{{businessContact.profile?.id}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/business-contact', businessContact.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

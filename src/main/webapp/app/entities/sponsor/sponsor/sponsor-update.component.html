@@ -1,0 +1,75 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+            <h2 id="jhi-sponsor-heading" jhiTranslate="sponsorApp.sponsorSponsor.home.createOrEditLabel">Create or edit a Sponsor</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!sponsor.id">
+                    <label for="id" jhiTranslate="global.field.id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id"
+                        [(ngModel)]="sponsor.id" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="sponsorApp.sponsorSponsor.name" for="field_name">Name</label>
+                    <input type="text" class="form-control" name="name" id="field_name"
+                        [(ngModel)]="sponsor.name" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="sponsorApp.sponsorSponsor.address" for="field_address">Address</label>
+                    <input type="text" class="form-control" name="address" id="field_address"
+                        [(ngModel)]="sponsor.address" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="sponsorApp.sponsorSponsor.city" for="field_city">City</label>
+                    <input type="text" class="form-control" name="city" id="field_city"
+                        [(ngModel)]="sponsor.city" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="sponsorApp.sponsorSponsor.region" for="field_region">Region</label>
+                    <input type="text" class="form-control" name="region" id="field_region"
+                        [(ngModel)]="sponsor.region" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="sponsorApp.sponsorSponsor.postalCode" for="field_postalCode">Postal Code</label>
+                    <input type="text" class="form-control" name="postalCode" id="field_postalCode"
+                        [(ngModel)]="sponsor.postalCode" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="sponsorApp.sponsorSponsor.country" for="field_country">Country</label>
+                    <input type="text" class="form-control" name="country" id="field_country"
+                        [(ngModel)]="sponsor.country" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="sponsorApp.sponsorSponsor.phone" for="field_phone">Phone</label>
+                    <input type="text" class="form-control" name="phone" id="field_phone"
+                        [(ngModel)]="sponsor.phone" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="sponsorApp.sponsorSponsor.fax" for="field_fax">Fax</label>
+                    <input type="text" class="form-control" name="fax" id="field_fax"
+                        [(ngModel)]="sponsor.fax" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="sponsorApp.sponsorSponsor.homePage" for="field_homePage">Home Page</label>
+                    <input type="text" class="form-control" name="homePage" id="field_homePage"
+                        [(ngModel)]="sponsor.homePage" />
+                </div>
+
+                <div class="form-group">
+                    <label jhiTranslate="sponsorApp.sponsorSponsor.businessContact" for="field_businessContact">Business Contact</label>
+                    <select class="form-control" id="field_businessContact" multiple name="businessContact" [(ngModel)]="sponsor.businessContacts">
+                        <option [ngValue]="getSelected(sponsor.businessContacts, businessActivityOption)" *ngFor="let businessActivityOption of businessactivities; trackBy: trackBusinessActivityById">{{businessActivityOption.id}}</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

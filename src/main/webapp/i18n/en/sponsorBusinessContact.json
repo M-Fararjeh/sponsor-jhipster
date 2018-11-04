@@ -1,0 +1,27 @@
+{
+  "sponsorApp": {
+    "sponsorBusinessContact": {
+      "home": {
+        "title": "Business Contacts",
+        "createLabel": "Create a new Business Contact",
+        "createOrEditLabel": "Create or edit a Business Contact"
+      },
+      "created": "A new Business Contact is created with identifier {{ param }}",
+      "updated": "A Business Contact is updated with identifier {{ param }}",
+      "deleted": "A Business Contact is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Business Contact {{ id }}?"
+      },
+      "detail": {
+        "title": "Business Contact"
+      },
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "personalPhone": "Personal Phone",
+      "workPhone": "Work Phone",
+      "email": "Email",
+      "sponsor": "Sponsor",
+      "profile": "Profile"
+    }
+  }
+}
