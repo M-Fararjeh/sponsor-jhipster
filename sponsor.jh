@@ -1,0 +1,48 @@
+entity Sponsor {
+	name String,
+    address String,
+    city String,
+    region String,
+    postalCode String,
+    country String,
+    phone String,
+    fax String,
+    homePage String
+}
+
+entity BusinessActivity {
+	activityName String
+}
+
+entity BusinessContact {
+	firstName String,
+	lastName String,
+	personalPhone String,
+	workPhone String,
+	email String
+}
+
+
+entity BusinessContactProfile {
+	attending String,
+	retention String,
+	customerService String,
+	customerServiceSpecial String
+}
+
+relationship OneToOne {
+	BusinessContact{profile} to BusinessContactProfile
+}
+
+relationship OneToMany {
+	Sponsor{businessContact} to BusinessContact
+}
+
+relationship ManyToMany {
+	Sponsor{businessContact} to BusinessActivity{sponsor}
+}
+
+paginate Sponsor, BusinessActivity with infinite-scroll
+paginate BusinessContact with pagination
+
+service all with serviceImpl
