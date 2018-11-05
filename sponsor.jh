@@ -1,11 +1,11 @@
 entity Sponsor {
-	name String,
+	name String required,
     address String,
     city String,
     region String,
     postalCode String,
     country String,
-    phone String,
+    phone String ,
     fax String,
     homePage String
 }
@@ -15,11 +15,11 @@ entity BusinessActivity {
 }
 
 entity BusinessContact {
-	firstName String,
-	lastName String,
-	personalPhone String,
-	workPhone String,
-	email String
+	firstName String required,
+	lastName String required,
+	personalPhone String  ,
+	workPhone String  ,
+	email String 
 }
 
 
@@ -44,5 +44,8 @@ relationship ManyToMany {
 
 paginate Sponsor, BusinessActivity with infinite-scroll
 paginate BusinessContact with pagination
+
+dto * with mapstruct
+search * with elasticsearch
 
 service all with serviceImpl
