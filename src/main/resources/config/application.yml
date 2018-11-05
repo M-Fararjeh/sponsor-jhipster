@@ -80,6 +80,8 @@ management:
         enabled: false # http://micrometer.io/ is disabled by default, as we use http://metrics.dropwizard.io/ instead
 
 spring:
+    autoconfigure:
+        exclude: org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchAutoConfiguration,org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDataAutoConfiguration
     application:
         name: sponsor
     jpa:
@@ -157,7 +159,7 @@ jhipster:
     mail:
         from: sponsor@localhost
     swagger:
-        default-include-pattern: /.*
+        default-include-pattern: /api/.*
         title: sponsor API
         description: sponsor API documentation
         version: 0.0.1

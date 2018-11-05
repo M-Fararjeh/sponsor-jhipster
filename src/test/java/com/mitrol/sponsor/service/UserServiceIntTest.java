@@ -3,6 +3,7 @@ package com.mitrol.sponsor.service;
 import com.mitrol.sponsor.SponsorApp;
 import com.mitrol.sponsor.config.Constants;
 import com.mitrol.sponsor.domain.User;
+import com.mitrol.sponsor.repository.search.UserSearchRepository;
 import com.mitrol.sponsor.repository.UserRepository;
 import com.mitrol.sponsor.service.dto.UserDTO;
 import com.mitrol.sponsor.security.AuthoritiesConstants;
@@ -37,6 +38,8 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -54,6 +57,14 @@ public class UserServiceIntTest {
 
     @Autowired
     private UserService userService;
+
+    /**
+     * This repository is mocked in the com.mitrol.sponsor.repository.search test package.
+     *
+     * @see com.mitrol.sponsor.repository.search.UserSearchRepositoryMockConfiguration
+     */
+    @Autowired
+    private UserSearchRepository mockUserSearchRepository;
 
     @Autowired
     private AuditingHandler auditingHandler;
