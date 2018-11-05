@@ -3,7 +3,10 @@
     "fields": [
         {
             "fieldName": "name",
-            "fieldType": "String"
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
         },
         {
             "fieldName": "address",
@@ -56,12 +59,13 @@
     ],
     "changelogDate": "20181104181332",
     "entityTableName": "sponsor",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "infinite-scroll",
     "service": "serviceImpl",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
     "clientRootFolder": "sponsor",
     "applications": "*",
+    "searchEngine": "elasticsearch",
     "microserviceName": "sponsor"
 }

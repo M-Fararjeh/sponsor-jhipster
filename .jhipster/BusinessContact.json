@@ -3,11 +3,17 @@
     "fields": [
         {
             "fieldName": "firstName",
-            "fieldType": "String"
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
         },
         {
             "fieldName": "lastName",
-            "fieldType": "String"
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
         },
         {
             "fieldName": "personalPhone",
@@ -40,12 +46,13 @@
     ],
     "changelogDate": "20181104181334",
     "entityTableName": "business_contact",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "pagination",
     "service": "serviceImpl",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
     "clientRootFolder": "sponsor",
     "applications": "*",
+    "searchEngine": "elasticsearch",
     "microserviceName": "sponsor"
 }

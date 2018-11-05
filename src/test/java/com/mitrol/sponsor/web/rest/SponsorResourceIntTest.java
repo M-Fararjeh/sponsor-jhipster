@@ -4,7 +4,10 @@ import com.mitrol.sponsor.SponsorApp;
 
 import com.mitrol.sponsor.domain.Sponsor;
 import com.mitrol.sponsor.repository.SponsorRepository;
+import com.mitrol.sponsor.repository.search.SponsorSearchRepository;
 import com.mitrol.sponsor.service.SponsorService;
+import com.mitrol.sponsor.service.dto.SponsorDTO;
+import com.mitrol.sponsor.service.mapper.SponsorMapper;
 import com.mitrol.sponsor.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -26,11 +29,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
 import static com.mitrol.sponsor.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -77,6 +82,9 @@ public class SponsorResourceIntTest {
 
     @Mock
     private SponsorRepository sponsorRepositoryMock;
+
+    @Autowired
+    private SponsorMapper sponsorMapper;
     
 
     @Mock
@@ -84,6 +92,14 @@ public class SponsorResourceIntTest {
 
     @Autowired
     private SponsorService sponsorService;
+
+    /**
+     * This repository is mocked in the com.mitrol.sponsor.repository.search test package.
+     *
+     * @see com.mitrol.sponsor.repository.search.SponsorSearchRepositoryMockConfiguration
+     */
+    @Autowired
+    private SponsorSearchRepository mockSponsorSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -143,9 +159,10 @@ public class SponsorResourceIntTest {
         int databaseSizeBeforeCreate = sponsorRepository.findAll().size();
 
         // Create the Sponsor
+        SponsorDTO sponsorDTO = sponsorMapper.toDto(sponsor);
         restSponsorMockMvc.perform(post("/api/sponsors")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(sponsor)))
+            .content(TestUtil.convertObjectToJsonBytes(sponsorDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Sponsor in the database
@@ -161,6 +178,9 @@ public class SponsorResourceIntTest {
         assertThat(testSponsor.getPhone()).isEqualTo(DEFAULT_PHONE);
         assertThat(testSponsor.getFax()).isEqualTo(DEFAULT_FAX);
         assertThat(testSponsor.getHomePage()).isEqualTo(DEFAULT_HOME_PAGE);
+
+        // Validate the Sponsor in Elasticsearch
+        verify(mockSponsorSearchRepository, times(1)).save(testSponsor);
     }
 
     @Test
@@ -170,16 +190,39 @@ public class SponsorResourceIntTest {
 
         // Create the Sponsor with an existing ID
         sponsor.setId(1L);
+        SponsorDTO sponsorDTO = sponsorMapper.toDto(sponsor);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restSponsorMockMvc.perform(post("/api/sponsors")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(sponsor)))
+            .content(TestUtil.convertObjectToJsonBytes(sponsorDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Sponsor in the database
         List<Sponsor> sponsorList = sponsorRepository.findAll();
         assertThat(sponsorList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the Sponsor in Elasticsearch
+        verify(mockSponsorSearchRepository, times(0)).save(sponsor);
+    }
+
+    @Test
+    @Transactional
+    public void checkNameIsRequired() throws Exception {
+        int databaseSizeBeforeTest = sponsorRepository.findAll().size();
+        // set the field null
+        sponsor.setName(null);
+
+        // Create the Sponsor, which fails.
+        SponsorDTO sponsorDTO = sponsorMapper.toDto(sponsor);
+
+        restSponsorMockMvc.perform(post("/api/sponsors")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(sponsorDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<Sponsor> sponsorList = sponsorRepository.findAll();
+        assertThat(sponsorList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -269,7 +312,7 @@ public class SponsorResourceIntTest {
     @Transactional
     public void updateSponsor() throws Exception {
         // Initialize the database
-        sponsorService.save(sponsor);
+        sponsorRepository.saveAndFlush(sponsor);
 
         int databaseSizeBeforeUpdate = sponsorRepository.findAll().size();
 
@@ -287,10 +330,11 @@ public class SponsorResourceIntTest {
             .phone(UPDATED_PHONE)
             .fax(UPDATED_FAX)
             .homePage(UPDATED_HOME_PAGE);
+        SponsorDTO sponsorDTO = sponsorMapper.toDto(updatedSponsor);
 
         restSponsorMockMvc.perform(put("/api/sponsors")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedSponsor)))
+            .content(TestUtil.convertObjectToJsonBytes(sponsorDTO)))
             .andExpect(status().isOk());
 
         // Validate the Sponsor in the database
@@ -306,6 +350,9 @@ public class SponsorResourceIntTest {
         assertThat(testSponsor.getPhone()).isEqualTo(UPDATED_PHONE);
         assertThat(testSponsor.getFax()).isEqualTo(UPDATED_FAX);
         assertThat(testSponsor.getHomePage()).isEqualTo(UPDATED_HOME_PAGE);
+
+        // Validate the Sponsor in Elasticsearch
+        verify(mockSponsorSearchRepository, times(1)).save(testSponsor);
     }
 
     @Test
@@ -314,23 +361,27 @@ public class SponsorResourceIntTest {
         int databaseSizeBeforeUpdate = sponsorRepository.findAll().size();
 
         // Create the Sponsor
+        SponsorDTO sponsorDTO = sponsorMapper.toDto(sponsor);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restSponsorMockMvc.perform(put("/api/sponsors")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(sponsor)))
+            .content(TestUtil.convertObjectToJsonBytes(sponsorDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Sponsor in the database
         List<Sponsor> sponsorList = sponsorRepository.findAll();
         assertThat(sponsorList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the Sponsor in Elasticsearch
+        verify(mockSponsorSearchRepository, times(0)).save(sponsor);
     }
 
     @Test
     @Transactional
     public void deleteSponsor() throws Exception {
         // Initialize the database
-        sponsorService.save(sponsor);
+        sponsorRepository.saveAndFlush(sponsor);
 
         int databaseSizeBeforeDelete = sponsorRepository.findAll().size();
 
@@ -342,6 +393,32 @@ public class SponsorResourceIntTest {
         // Validate the database is empty
         List<Sponsor> sponsorList = sponsorRepository.findAll();
         assertThat(sponsorList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the Sponsor in Elasticsearch
+        verify(mockSponsorSearchRepository, times(1)).deleteById(sponsor.getId());
+    }
+
+    @Test
+    @Transactional
+    public void searchSponsor() throws Exception {
+        // Initialize the database
+        sponsorRepository.saveAndFlush(sponsor);
+        when(mockSponsorSearchRepository.search(queryStringQuery("id:" + sponsor.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(sponsor), PageRequest.of(0, 1), 1));
+        // Search the sponsor
+        restSponsorMockMvc.perform(get("/api/_search/sponsors?query=id:" + sponsor.getId()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(sponsor.getId().intValue())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
+            .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS.toString())))
+            .andExpect(jsonPath("$.[*].city").value(hasItem(DEFAULT_CITY.toString())))
+            .andExpect(jsonPath("$.[*].region").value(hasItem(DEFAULT_REGION.toString())))
+            .andExpect(jsonPath("$.[*].postalCode").value(hasItem(DEFAULT_POSTAL_CODE.toString())))
+            .andExpect(jsonPath("$.[*].country").value(hasItem(DEFAULT_COUNTRY.toString())))
+            .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE.toString())))
+            .andExpect(jsonPath("$.[*].fax").value(hasItem(DEFAULT_FAX.toString())))
+            .andExpect(jsonPath("$.[*].homePage").value(hasItem(DEFAULT_HOME_PAGE.toString())));
     }
 
     @Test
@@ -357,5 +434,28 @@ public class SponsorResourceIntTest {
         assertThat(sponsor1).isNotEqualTo(sponsor2);
         sponsor1.setId(null);
         assertThat(sponsor1).isNotEqualTo(sponsor2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(SponsorDTO.class);
+        SponsorDTO sponsorDTO1 = new SponsorDTO();
+        sponsorDTO1.setId(1L);
+        SponsorDTO sponsorDTO2 = new SponsorDTO();
+        assertThat(sponsorDTO1).isNotEqualTo(sponsorDTO2);
+        sponsorDTO2.setId(sponsorDTO1.getId());
+        assertThat(sponsorDTO1).isEqualTo(sponsorDTO2);
+        sponsorDTO2.setId(2L);
+        assertThat(sponsorDTO1).isNotEqualTo(sponsorDTO2);
+        sponsorDTO1.setId(null);
+        assertThat(sponsorDTO1).isNotEqualTo(sponsorDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(sponsorMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(sponsorMapper.fromId(null)).isNull();
     }
 }

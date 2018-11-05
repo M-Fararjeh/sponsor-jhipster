@@ -12,6 +12,7 @@ type EntityArrayResponseType = HttpResponse<IBusinessContact[]>;
 @Injectable({ providedIn: 'root' })
 export class BusinessContactService {
   public resourceUrl = SERVER_API_URL + 'api/business-contacts';
+  public resourceSearchUrl = SERVER_API_URL + 'api/_search/business-contacts';
 
   constructor(private http: HttpClient) {}
 
@@ -34,5 +35,10 @@ export class BusinessContactService {
 
   delete(id: number): Observable<HttpResponse<any>> {
     return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+  }
+
+  search(req?: any): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http.get<IBusinessContact[]>(this.resourceSearchUrl, { params: options, observe: 'response' });
   }
 }

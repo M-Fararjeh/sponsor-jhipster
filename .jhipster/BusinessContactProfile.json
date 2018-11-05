@@ -21,12 +21,13 @@
     "relationships": [],
     "changelogDate": "20181104181335",
     "entityTableName": "business_contact_profile",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "no",
     "service": "serviceImpl",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
     "clientRootFolder": "sponsor",
     "applications": "*",
+    "searchEngine": "elasticsearch",
     "microserviceName": "sponsor"
 }

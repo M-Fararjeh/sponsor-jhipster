@@ -1,11 +1,11 @@
 package com.mitrol.sponsor.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.mitrol.sponsor.domain.Sponsor;
 import com.mitrol.sponsor.service.SponsorService;
 import com.mitrol.sponsor.web.rest.errors.BadRequestAlertException;
 import com.mitrol.sponsor.web.rest.util.HeaderUtil;
 import com.mitrol.sponsor.web.rest.util.PaginationUtil;
+import com.mitrol.sponsor.service.dto.SponsorDTO;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +16,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing Sponsor.
@@ -42,18 +46,18 @@ public class SponsorResource {
     /**
      * POST  /sponsors : Create a new sponsor.
      *
-     * @param sponsor the sponsor to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new sponsor, or with status 400 (Bad Request) if the sponsor has already an ID
+     * @param sponsorDTO the sponsorDTO to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new sponsorDTO, or with status 400 (Bad Request) if the sponsor has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/sponsors")
     @Timed
-    public ResponseEntity<Sponsor> createSponsor(@RequestBody Sponsor sponsor) throws URISyntaxException {
-        log.debug("REST request to save Sponsor : {}", sponsor);
-        if (sponsor.getId() != null) {
+    public ResponseEntity<SponsorDTO> createSponsor(@Valid @RequestBody SponsorDTO sponsorDTO) throws URISyntaxException {
+        log.debug("REST request to save Sponsor : {}", sponsorDTO);
+        if (sponsorDTO.getId() != null) {
             throw new BadRequestAlertException("A new sponsor cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Sponsor result = sponsorService.save(sponsor);
+        SponsorDTO result = sponsorService.save(sponsorDTO);
         return ResponseEntity.created(new URI("/api/sponsors/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -62,22 +66,22 @@ public class SponsorResource {
     /**
      * PUT  /sponsors : Updates an existing sponsor.
      *
-     * @param sponsor the sponsor to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated sponsor,
-     * or with status 400 (Bad Request) if the sponsor is not valid,
-     * or with status 500 (Internal Server Error) if the sponsor couldn't be updated
+     * @param sponsorDTO the sponsorDTO to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated sponsorDTO,
+     * or with status 400 (Bad Request) if the sponsorDTO is not valid,
+     * or with status 500 (Internal Server Error) if the sponsorDTO couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/sponsors")
     @Timed
-    public ResponseEntity<Sponsor> updateSponsor(@RequestBody Sponsor sponsor) throws URISyntaxException {
-        log.debug("REST request to update Sponsor : {}", sponsor);
-        if (sponsor.getId() == null) {
+    public ResponseEntity<SponsorDTO> updateSponsor(@Valid @RequestBody SponsorDTO sponsorDTO) throws URISyntaxException {
+        log.debug("REST request to update Sponsor : {}", sponsorDTO);
+        if (sponsorDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Sponsor result = sponsorService.save(sponsor);
+        SponsorDTO result = sponsorService.save(sponsorDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, sponsor.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, sponsorDTO.getId().toString()))
             .body(result);
     }
 
@@ -90,9 +94,9 @@ public class SponsorResource {
      */
     @GetMapping("/sponsors")
     @Timed
-    public ResponseEntity<List<Sponsor>> getAllSponsors(Pageable pageable, @RequestParam(required = false, defaultValue = "false") boolean eagerload) {
+    public ResponseEntity<List<SponsorDTO>> getAllSponsors(Pageable pageable, @RequestParam(required = false, defaultValue = "false") boolean eagerload) {
         log.debug("REST request to get a page of Sponsors");
-        Page<Sponsor> page;
+        Page<SponsorDTO> page;
         if (eagerload) {
             page = sponsorService.findAllWithEagerRelationships(pageable);
         } else {
@@ -105,21 +109,21 @@ public class SponsorResource {
     /**
      * GET  /sponsors/:id : get the "id" sponsor.
      *
-     * @param id the id of the sponsor to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the sponsor, or with status 404 (Not Found)
+     * @param id the id of the sponsorDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the sponsorDTO, or with status 404 (Not Found)
      */
     @GetMapping("/sponsors/{id}")
     @Timed
-    public ResponseEntity<Sponsor> getSponsor(@PathVariable Long id) {
+    public ResponseEntity<SponsorDTO> getSponsor(@PathVariable Long id) {
         log.debug("REST request to get Sponsor : {}", id);
-        Optional<Sponsor> sponsor = sponsorService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(sponsor);
+        Optional<SponsorDTO> sponsorDTO = sponsorService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(sponsorDTO);
     }
 
     /**
      * DELETE  /sponsors/:id : delete the "id" sponsor.
      *
-     * @param id the id of the sponsor to delete
+     * @param id the id of the sponsorDTO to delete
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/sponsors/{id}")
@@ -129,4 +133,22 @@ public class SponsorResource {
         sponsorService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+
+    /**
+     * SEARCH  /_search/sponsors?query=:query : search for the sponsor corresponding
+     * to the query.
+     *
+     * @param query the query of the sponsor search
+     * @param pageable the pagination information
+     * @return the result of the search
+     */
+    @GetMapping("/_search/sponsors")
+    @Timed
+    public ResponseEntity<List<SponsorDTO>> searchSponsors(@RequestParam String query, Pageable pageable) {
+        log.debug("REST request to search for a page of Sponsors for query {}", query);
+        Page<SponsorDTO> page = sponsorService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/sponsors");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
 }

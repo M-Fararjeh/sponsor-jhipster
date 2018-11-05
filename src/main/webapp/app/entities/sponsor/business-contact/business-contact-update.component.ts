@@ -44,10 +44,10 @@ export class BusinessContactUpdateComponent implements OnInit {
     );
     this.businessContactProfileService.query({ filter: 'businesscontact-is-null' }).subscribe(
       (res: HttpResponse<IBusinessContactProfile[]>) => {
-        if (!this.businessContact.profile || !this.businessContact.profile.id) {
+        if (!this.businessContact.profileId) {
           this.profiles = res.body;
         } else {
-          this.businessContactProfileService.find(this.businessContact.profile.id).subscribe(
+          this.businessContactProfileService.find(this.businessContact.profileId).subscribe(
             (subRes: HttpResponse<IBusinessContactProfile>) => {
               this.profiles = [subRes.body].concat(res.body);
             },

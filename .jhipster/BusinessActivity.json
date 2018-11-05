@@ -17,12 +17,13 @@
     ],
     "changelogDate": "20181104181333",
     "entityTableName": "business_activity",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "infinite-scroll",
     "service": "serviceImpl",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
     "clientRootFolder": "sponsor",
     "applications": "*",
+    "searchEngine": "elasticsearch",
     "microserviceName": "sponsor"
 }

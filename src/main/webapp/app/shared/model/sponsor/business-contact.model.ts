@@ -1,6 +1,3 @@
-import { ISponsor } from 'app/shared/model/sponsor/sponsor.model';
-import { IBusinessContactProfile } from 'app/shared/model/sponsor/business-contact-profile.model';
-
 export interface IBusinessContact {
   id?: number;
   firstName?: string;
@@ -8,8 +5,8 @@ export interface IBusinessContact {
   personalPhone?: string;
   workPhone?: string;
   email?: string;
-  sponsor?: ISponsor;
-  profile?: IBusinessContactProfile;
+  sponsorId?: number;
+  profileId?: number;
 }
 
 export class BusinessContact implements IBusinessContact {
@@ -20,7 +17,7 @@ export class BusinessContact implements IBusinessContact {
     public personalPhone?: string,
     public workPhone?: string,
     public email?: string,
-    public sponsor?: ISponsor,
-    public profile?: IBusinessContactProfile
+    public sponsorId?: number,
+    public profileId?: number
   ) {}
 }

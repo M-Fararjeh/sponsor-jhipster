@@ -27,14 +27,14 @@
                 </dd>
                 <dt><span jhiTranslate="sponsorApp.sponsorBusinessContact.sponsor">Sponsor</span></dt>
                 <dd>
-                    <div *ngIf="businessContact.sponsor">
-                        <a [routerLink]="['/sponsor', businessContact.sponsor?.id, 'view']">{{businessContact.sponsor?.id}}</a>
+                    <div *ngIf="businessContact.sponsorId">
+                        <a [routerLink]="['/sponsor', businessContact.sponsorId, 'view']">{{businessContact.sponsorId}}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="sponsorApp.sponsorBusinessContact.profile">Profile</span></dt>
                 <dd>
-                    <div *ngIf="businessContact.profile">
-                        <a [routerLink]="['/business-contact-profile', businessContact.profile?.id, 'view']">{{businessContact.profile?.id}}</a>
+                    <div *ngIf="businessContact.profileId">
+                        <a [routerLink]="['/business-contact-profile', businessContact.profileId, 'view']">{{businessContact.profileId}}</a>
                     </div>
                 </dd>
             </dl>

@@ -3,12 +3,27 @@
         <span jhiTranslate="sponsorApp.sponsorBusinessActivity.home.title">Business Activities</span>
         <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-business-activity" [routerLink]="['/business-activity/new']">
             <fa-icon [icon]="'plus'"></fa-icon>
-            <span  jhiTranslate="sponsorApp.sponsorBusinessActivity.home.createLabel">
+            <span class="hidden-sm-down"  jhiTranslate="sponsorApp.sponsorBusinessActivity.home.createLabel">
             Create new Business Activity
             </span>
         </button>
     </h2>
     <jhi-alert></jhi-alert>
+    <div class="row">
+        <div class="col-sm-12">
+            <form name="searchForm" class="form-inline">
+                <div class="input-group w-100 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'sponsorApp.sponsorBusinessActivity.home.search' | translate }}">
+                    <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
+                        <fa-icon [icon]="'search'"></fa-icon>
+                    </button>
+                    <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="currentSearch">
+                        <fa-icon [icon]="'trash-alt'"></fa-icon>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
     <br/>
     <div class="table-responsive" *ngIf="businessActivities">
         <table class="table table-striped">

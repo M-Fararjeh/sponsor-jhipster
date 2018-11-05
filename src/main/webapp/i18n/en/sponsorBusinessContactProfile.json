@@ -4,7 +4,8 @@
       "home": {
         "title": "Business Contact Profiles",
         "createLabel": "Create a new Business Contact Profile",
-        "createOrEditLabel": "Create or edit a Business Contact Profile"
+        "createOrEditLabel": "Create or edit a Business Contact Profile",
+        "search": "Search for Business Contact Profile"
       },
       "created": "A new Business Contact Profile is created with identifier {{ param }}",
       "updated": "A Business Contact Profile is updated with identifier {{ param }}",

@@ -1,10 +1,10 @@
 package com.mitrol.sponsor.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.mitrol.sponsor.domain.BusinessContactProfile;
 import com.mitrol.sponsor.service.BusinessContactProfileService;
 import com.mitrol.sponsor.web.rest.errors.BadRequestAlertException;
 import com.mitrol.sponsor.web.rest.util.HeaderUtil;
+import com.mitrol.sponsor.service.dto.BusinessContactProfileDTO;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +16,9 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing BusinessContactProfile.
@@ -37,18 +40,18 @@ public class BusinessContactProfileResource {
     /**
      * POST  /business-contact-profiles : Create a new businessContactProfile.
      *
-     * @param businessContactProfile the businessContactProfile to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new businessContactProfile, or with status 400 (Bad Request) if the businessContactProfile has already an ID
+     * @param businessContactProfileDTO the businessContactProfileDTO to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new businessContactProfileDTO, or with status 400 (Bad Request) if the businessContactProfile has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/business-contact-profiles")
     @Timed
-    public ResponseEntity<BusinessContactProfile> createBusinessContactProfile(@RequestBody BusinessContactProfile businessContactProfile) throws URISyntaxException {
-        log.debug("REST request to save BusinessContactProfile : {}", businessContactProfile);
-        if (businessContactProfile.getId() != null) {
+    public ResponseEntity<BusinessContactProfileDTO> createBusinessContactProfile(@RequestBody BusinessContactProfileDTO businessContactProfileDTO) throws URISyntaxException {
+        log.debug("REST request to save BusinessContactProfile : {}", businessContactProfileDTO);
+        if (businessContactProfileDTO.getId() != null) {
             throw new BadRequestAlertException("A new businessContactProfile cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        BusinessContactProfile result = businessContactProfileService.save(businessContactProfile);
+        BusinessContactProfileDTO result = businessContactProfileService.save(businessContactProfileDTO);
         return ResponseEntity.created(new URI("/api/business-contact-profiles/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -57,22 +60,22 @@ public class BusinessContactProfileResource {
     /**
      * PUT  /business-contact-profiles : Updates an existing businessContactProfile.
      *
-     * @param businessContactProfile the businessContactProfile to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated businessContactProfile,
-     * or with status 400 (Bad Request) if the businessContactProfile is not valid,
-     * or with status 500 (Internal Server Error) if the businessContactProfile couldn't be updated
+     * @param businessContactProfileDTO the businessContactProfileDTO to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated businessContactProfileDTO,
+     * or with status 400 (Bad Request) if the businessContactProfileDTO is not valid,
+     * or with status 500 (Internal Server Error) if the businessContactProfileDTO couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/business-contact-profiles")
     @Timed
-    public ResponseEntity<BusinessContactProfile> updateBusinessContactProfile(@RequestBody BusinessContactProfile businessContactProfile) throws URISyntaxException {
-        log.debug("REST request to update BusinessContactProfile : {}", businessContactProfile);
-        if (businessContactProfile.getId() == null) {
+    public ResponseEntity<BusinessContactProfileDTO> updateBusinessContactProfile(@RequestBody BusinessContactProfileDTO businessContactProfileDTO) throws URISyntaxException {
+        log.debug("REST request to update BusinessContactProfile : {}", businessContactProfileDTO);
+        if (businessContactProfileDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        BusinessContactProfile result = businessContactProfileService.save(businessContactProfile);
+        BusinessContactProfileDTO result = businessContactProfileService.save(businessContactProfileDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, businessContactProfile.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, businessContactProfileDTO.getId().toString()))
             .body(result);
     }
 
@@ -83,7 +86,7 @@ public class BusinessContactProfileResource {
      */
     @GetMapping("/business-contact-profiles")
     @Timed
-    public List<BusinessContactProfile> getAllBusinessContactProfiles() {
+    public List<BusinessContactProfileDTO> getAllBusinessContactProfiles() {
         log.debug("REST request to get all BusinessContactProfiles");
         return businessContactProfileService.findAll();
     }
@@ -91,21 +94,21 @@ public class BusinessContactProfileResource {
     /**
      * GET  /business-contact-profiles/:id : get the "id" businessContactProfile.
      *
-     * @param id the id of the businessContactProfile to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the businessContactProfile, or with status 404 (Not Found)
+     * @param id the id of the businessContactProfileDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the businessContactProfileDTO, or with status 404 (Not Found)
      */
     @GetMapping("/business-contact-profiles/{id}")
     @Timed
-    public ResponseEntity<BusinessContactProfile> getBusinessContactProfile(@PathVariable Long id) {
+    public ResponseEntity<BusinessContactProfileDTO> getBusinessContactProfile(@PathVariable Long id) {
         log.debug("REST request to get BusinessContactProfile : {}", id);
-        Optional<BusinessContactProfile> businessContactProfile = businessContactProfileService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(businessContactProfile);
+        Optional<BusinessContactProfileDTO> businessContactProfileDTO = businessContactProfileService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(businessContactProfileDTO);
     }
 
     /**
      * DELETE  /business-contact-profiles/:id : delete the "id" businessContactProfile.
      *
-     * @param id the id of the businessContactProfile to delete
+     * @param id the id of the businessContactProfileDTO to delete
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/business-contact-profiles/{id}")
@@ -115,4 +118,19 @@ public class BusinessContactProfileResource {
         businessContactProfileService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+
+    /**
+     * SEARCH  /_search/business-contact-profiles?query=:query : search for the businessContactProfile corresponding
+     * to the query.
+     *
+     * @param query the query of the businessContactProfile search
+     * @return the result of the search
+     */
+    @GetMapping("/_search/business-contact-profiles")
+    @Timed
+    public List<BusinessContactProfileDTO> searchBusinessContactProfiles(@RequestParam String query) {
+        log.debug("REST request to search BusinessContactProfiles for query {}", query);
+        return businessContactProfileService.search(query);
+    }
+
 }
