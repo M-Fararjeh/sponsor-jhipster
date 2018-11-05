@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
@@ -15,21 +16,51 @@ export class BusinessContactProfileComponent implements OnInit, OnDestroy {
   businessContactProfiles: IBusinessContactProfile[];
   currentAccount: any;
   eventSubscriber: Subscription;
+  currentSearch: string;
 
   constructor(
     private businessContactProfileService: BusinessContactProfileService,
     private jhiAlertService: JhiAlertService,
     private eventManager: JhiEventManager,
+    private activatedRoute: ActivatedRoute,
     private principal: Principal
-  ) {}
+  ) {
+    this.currentSearch =
+      this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search'] ? this.activatedRoute.snapshot.params['search'] : '';
+  }
 
   loadAll() {
+    if (this.currentSearch) {
+      this.businessContactProfileService
+        .search({
+          query: this.currentSearch
+        })
+        .subscribe(
+          (res: HttpResponse<IBusinessContactProfile[]>) => (this.businessContactProfiles = res.body),
+          (res: HttpErrorResponse) => this.onError(res.message)
+        );
+      return;
+    }
     this.businessContactProfileService.query().subscribe(
       (res: HttpResponse<IBusinessContactProfile[]>) => {
         this.businessContactProfiles = res.body;
+        this.currentSearch = '';
       },
       (res: HttpErrorResponse) => this.onError(res.message)
     );
+  }
+
+  search(query) {
+    if (!query) {
+      return this.clear();
+    }
+    this.currentSearch = query;
+    this.loadAll();
+  }
+
+  clear() {
+    this.currentSearch = '';
+    this.loadAll();
   }
 
   ngOnInit() {

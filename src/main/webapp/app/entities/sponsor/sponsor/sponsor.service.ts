@@ -12,6 +12,7 @@ type EntityArrayResponseType = HttpResponse<ISponsor[]>;
 @Injectable({ providedIn: 'root' })
 export class SponsorService {
   public resourceUrl = SERVER_API_URL + 'api/sponsors';
+  public resourceSearchUrl = SERVER_API_URL + 'api/_search/sponsors';
 
   constructor(private http: HttpClient) {}
 
@@ -34,5 +35,10 @@ export class SponsorService {
 
   delete(id: number): Observable<HttpResponse<any>> {
     return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+  }
+
+  search(req?: any): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http.get<ISponsor[]>(this.resourceSearchUrl, { params: options, observe: 'response' });
   }
 }

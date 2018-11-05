@@ -3,6 +3,9 @@ package com.mitrol.sponsor.service.impl;
 import com.mitrol.sponsor.service.SponsorService;
 import com.mitrol.sponsor.domain.Sponsor;
 import com.mitrol.sponsor.repository.SponsorRepository;
+import com.mitrol.sponsor.repository.search.SponsorSearchRepository;
+import com.mitrol.sponsor.service.dto.SponsorDTO;
+import com.mitrol.sponsor.service.mapper.SponsorMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing Sponsor.
@@ -24,20 +29,31 @@ public class SponsorServiceImpl implements SponsorService {
 
     private final SponsorRepository sponsorRepository;
 
-    public SponsorServiceImpl(SponsorRepository sponsorRepository) {
+    private final SponsorMapper sponsorMapper;
+
+    private final SponsorSearchRepository sponsorSearchRepository;
+
+    public SponsorServiceImpl(SponsorRepository sponsorRepository, SponsorMapper sponsorMapper, SponsorSearchRepository sponsorSearchRepository) {
         this.sponsorRepository = sponsorRepository;
+        this.sponsorMapper = sponsorMapper;
+        this.sponsorSearchRepository = sponsorSearchRepository;
     }
 
     /**
      * Save a sponsor.
      *
-     * @param sponsor the entity to save
+     * @param sponsorDTO the entity to save
      * @return the persisted entity
      */
     @Override
-    public Sponsor save(Sponsor sponsor) {
-        log.debug("Request to save Sponsor : {}", sponsor);
-        return sponsorRepository.save(sponsor);
+    public SponsorDTO save(SponsorDTO sponsorDTO) {
+        log.debug("Request to save Sponsor : {}", sponsorDTO);
+
+        Sponsor sponsor = sponsorMapper.toEntity(sponsorDTO);
+        sponsor = sponsorRepository.save(sponsor);
+        SponsorDTO result = sponsorMapper.toDto(sponsor);
+        sponsorSearchRepository.save(sponsor);
+        return result;
     }
 
     /**
@@ -48,9 +64,10 @@ public class SponsorServiceImpl implements SponsorService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Page<Sponsor> findAll(Pageable pageable) {
+    public Page<SponsorDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Sponsors");
-        return sponsorRepository.findAll(pageable);
+        return sponsorRepository.findAll(pageable)
+            .map(sponsorMapper::toDto);
     }
 
     /**
@@ -58,8 +75,8 @@ public class SponsorServiceImpl implements SponsorService {
      *
      * @return the list of entities
      */
-    public Page<Sponsor> findAllWithEagerRelationships(Pageable pageable) {
-        return sponsorRepository.findAllWithEagerRelationships(pageable);
+    public Page<SponsorDTO> findAllWithEagerRelationships(Pageable pageable) {
+        return sponsorRepository.findAllWithEagerRelationships(pageable).map(sponsorMapper::toDto);
     }
     
 
@@ -71,9 +88,10 @@ public class SponsorServiceImpl implements SponsorService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Optional<Sponsor> findOne(Long id) {
+    public Optional<SponsorDTO> findOne(Long id) {
         log.debug("Request to get Sponsor : {}", id);
-        return sponsorRepository.findOneWithEagerRelationships(id);
+        return sponsorRepository.findOneWithEagerRelationships(id)
+            .map(sponsorMapper::toDto);
     }
 
     /**
@@ -85,5 +103,21 @@ public class SponsorServiceImpl implements SponsorService {
     public void delete(Long id) {
         log.debug("Request to delete Sponsor : {}", id);
         sponsorRepository.deleteById(id);
+        sponsorSearchRepository.deleteById(id);
+    }
+
+    /**
+     * Search for the sponsor corresponding to the query.
+     *
+     * @param query the query of the search
+     * @param pageable the pagination information
+     * @return the list of entities
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Page<SponsorDTO> search(String query, Pageable pageable) {
+        log.debug("Request to search for a page of Sponsors for query {}", query);
+        return sponsorSearchRepository.search(queryStringQuery(query), pageable)
+            .map(sponsorMapper::toDto);
     }
 }

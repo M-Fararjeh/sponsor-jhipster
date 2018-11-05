@@ -4,7 +4,10 @@ import com.mitrol.sponsor.SponsorApp;
 
 import com.mitrol.sponsor.domain.BusinessContactProfile;
 import com.mitrol.sponsor.repository.BusinessContactProfileRepository;
+import com.mitrol.sponsor.repository.search.BusinessContactProfileSearchRepository;
 import com.mitrol.sponsor.service.BusinessContactProfileService;
+import com.mitrol.sponsor.service.dto.BusinessContactProfileDTO;
+import com.mitrol.sponsor.service.mapper.BusinessContactProfileMapper;
 import com.mitrol.sponsor.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -22,12 +25,15 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.Collections;
 import java.util.List;
 
 
 import static com.mitrol.sponsor.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -54,9 +60,20 @@ public class BusinessContactProfileResourceIntTest {
 
     @Autowired
     private BusinessContactProfileRepository businessContactProfileRepository;
+
+    @Autowired
+    private BusinessContactProfileMapper businessContactProfileMapper;
     
     @Autowired
     private BusinessContactProfileService businessContactProfileService;
+
+    /**
+     * This repository is mocked in the com.mitrol.sponsor.repository.search test package.
+     *
+     * @see com.mitrol.sponsor.repository.search.BusinessContactProfileSearchRepositoryMockConfiguration
+     */
+    @Autowired
+    private BusinessContactProfileSearchRepository mockBusinessContactProfileSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -111,9 +128,10 @@ public class BusinessContactProfileResourceIntTest {
         int databaseSizeBeforeCreate = businessContactProfileRepository.findAll().size();
 
         // Create the BusinessContactProfile
+        BusinessContactProfileDTO businessContactProfileDTO = businessContactProfileMapper.toDto(businessContactProfile);
         restBusinessContactProfileMockMvc.perform(post("/api/business-contact-profiles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(businessContactProfile)))
+            .content(TestUtil.convertObjectToJsonBytes(businessContactProfileDTO)))
             .andExpect(status().isCreated());
 
         // Validate the BusinessContactProfile in the database
@@ -124,6 +142,9 @@ public class BusinessContactProfileResourceIntTest {
         assertThat(testBusinessContactProfile.getRetention()).isEqualTo(DEFAULT_RETENTION);
         assertThat(testBusinessContactProfile.getCustomerService()).isEqualTo(DEFAULT_CUSTOMER_SERVICE);
         assertThat(testBusinessContactProfile.getCustomerServiceSpecial()).isEqualTo(DEFAULT_CUSTOMER_SERVICE_SPECIAL);
+
+        // Validate the BusinessContactProfile in Elasticsearch
+        verify(mockBusinessContactProfileSearchRepository, times(1)).save(testBusinessContactProfile);
     }
 
     @Test
@@ -133,16 +154,20 @@ public class BusinessContactProfileResourceIntTest {
 
         // Create the BusinessContactProfile with an existing ID
         businessContactProfile.setId(1L);
+        BusinessContactProfileDTO businessContactProfileDTO = businessContactProfileMapper.toDto(businessContactProfile);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restBusinessContactProfileMockMvc.perform(post("/api/business-contact-profiles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(businessContactProfile)))
+            .content(TestUtil.convertObjectToJsonBytes(businessContactProfileDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the BusinessContactProfile in the database
         List<BusinessContactProfile> businessContactProfileList = businessContactProfileRepository.findAll();
         assertThat(businessContactProfileList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the BusinessContactProfile in Elasticsearch
+        verify(mockBusinessContactProfileSearchRepository, times(0)).save(businessContactProfile);
     }
 
     @Test
@@ -191,7 +216,7 @@ public class BusinessContactProfileResourceIntTest {
     @Transactional
     public void updateBusinessContactProfile() throws Exception {
         // Initialize the database
-        businessContactProfileService.save(businessContactProfile);
+        businessContactProfileRepository.saveAndFlush(businessContactProfile);
 
         int databaseSizeBeforeUpdate = businessContactProfileRepository.findAll().size();
 
@@ -204,10 +229,11 @@ public class BusinessContactProfileResourceIntTest {
             .retention(UPDATED_RETENTION)
             .customerService(UPDATED_CUSTOMER_SERVICE)
             .customerServiceSpecial(UPDATED_CUSTOMER_SERVICE_SPECIAL);
+        BusinessContactProfileDTO businessContactProfileDTO = businessContactProfileMapper.toDto(updatedBusinessContactProfile);
 
         restBusinessContactProfileMockMvc.perform(put("/api/business-contact-profiles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedBusinessContactProfile)))
+            .content(TestUtil.convertObjectToJsonBytes(businessContactProfileDTO)))
             .andExpect(status().isOk());
 
         // Validate the BusinessContactProfile in the database
@@ -218,6 +244,9 @@ public class BusinessContactProfileResourceIntTest {
         assertThat(testBusinessContactProfile.getRetention()).isEqualTo(UPDATED_RETENTION);
         assertThat(testBusinessContactProfile.getCustomerService()).isEqualTo(UPDATED_CUSTOMER_SERVICE);
         assertThat(testBusinessContactProfile.getCustomerServiceSpecial()).isEqualTo(UPDATED_CUSTOMER_SERVICE_SPECIAL);
+
+        // Validate the BusinessContactProfile in Elasticsearch
+        verify(mockBusinessContactProfileSearchRepository, times(1)).save(testBusinessContactProfile);
     }
 
     @Test
@@ -226,23 +255,27 @@ public class BusinessContactProfileResourceIntTest {
         int databaseSizeBeforeUpdate = businessContactProfileRepository.findAll().size();
 
         // Create the BusinessContactProfile
+        BusinessContactProfileDTO businessContactProfileDTO = businessContactProfileMapper.toDto(businessContactProfile);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restBusinessContactProfileMockMvc.perform(put("/api/business-contact-profiles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(businessContactProfile)))
+            .content(TestUtil.convertObjectToJsonBytes(businessContactProfileDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the BusinessContactProfile in the database
         List<BusinessContactProfile> businessContactProfileList = businessContactProfileRepository.findAll();
         assertThat(businessContactProfileList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the BusinessContactProfile in Elasticsearch
+        verify(mockBusinessContactProfileSearchRepository, times(0)).save(businessContactProfile);
     }
 
     @Test
     @Transactional
     public void deleteBusinessContactProfile() throws Exception {
         // Initialize the database
-        businessContactProfileService.save(businessContactProfile);
+        businessContactProfileRepository.saveAndFlush(businessContactProfile);
 
         int databaseSizeBeforeDelete = businessContactProfileRepository.findAll().size();
 
@@ -254,6 +287,27 @@ public class BusinessContactProfileResourceIntTest {
         // Validate the database is empty
         List<BusinessContactProfile> businessContactProfileList = businessContactProfileRepository.findAll();
         assertThat(businessContactProfileList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the BusinessContactProfile in Elasticsearch
+        verify(mockBusinessContactProfileSearchRepository, times(1)).deleteById(businessContactProfile.getId());
+    }
+
+    @Test
+    @Transactional
+    public void searchBusinessContactProfile() throws Exception {
+        // Initialize the database
+        businessContactProfileRepository.saveAndFlush(businessContactProfile);
+        when(mockBusinessContactProfileSearchRepository.search(queryStringQuery("id:" + businessContactProfile.getId())))
+            .thenReturn(Collections.singletonList(businessContactProfile));
+        // Search the businessContactProfile
+        restBusinessContactProfileMockMvc.perform(get("/api/_search/business-contact-profiles?query=id:" + businessContactProfile.getId()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(businessContactProfile.getId().intValue())))
+            .andExpect(jsonPath("$.[*].attending").value(hasItem(DEFAULT_ATTENDING.toString())))
+            .andExpect(jsonPath("$.[*].retention").value(hasItem(DEFAULT_RETENTION.toString())))
+            .andExpect(jsonPath("$.[*].customerService").value(hasItem(DEFAULT_CUSTOMER_SERVICE.toString())))
+            .andExpect(jsonPath("$.[*].customerServiceSpecial").value(hasItem(DEFAULT_CUSTOMER_SERVICE_SPECIAL.toString())));
     }
 
     @Test
@@ -269,5 +323,28 @@ public class BusinessContactProfileResourceIntTest {
         assertThat(businessContactProfile1).isNotEqualTo(businessContactProfile2);
         businessContactProfile1.setId(null);
         assertThat(businessContactProfile1).isNotEqualTo(businessContactProfile2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(BusinessContactProfileDTO.class);
+        BusinessContactProfileDTO businessContactProfileDTO1 = new BusinessContactProfileDTO();
+        businessContactProfileDTO1.setId(1L);
+        BusinessContactProfileDTO businessContactProfileDTO2 = new BusinessContactProfileDTO();
+        assertThat(businessContactProfileDTO1).isNotEqualTo(businessContactProfileDTO2);
+        businessContactProfileDTO2.setId(businessContactProfileDTO1.getId());
+        assertThat(businessContactProfileDTO1).isEqualTo(businessContactProfileDTO2);
+        businessContactProfileDTO2.setId(2L);
+        assertThat(businessContactProfileDTO1).isNotEqualTo(businessContactProfileDTO2);
+        businessContactProfileDTO1.setId(null);
+        assertThat(businessContactProfileDTO1).isNotEqualTo(businessContactProfileDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(businessContactProfileMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(businessContactProfileMapper.fromId(null)).isNull();
     }
 }

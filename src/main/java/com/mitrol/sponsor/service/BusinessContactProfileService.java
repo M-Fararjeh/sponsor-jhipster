@@ -1,6 +1,6 @@
 package com.mitrol.sponsor.service;
 
-import com.mitrol.sponsor.domain.BusinessContactProfile;
+import com.mitrol.sponsor.service.dto.BusinessContactProfileDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,17 +13,17 @@ public interface BusinessContactProfileService {
     /**
      * Save a businessContactProfile.
      *
-     * @param businessContactProfile the entity to save
+     * @param businessContactProfileDTO the entity to save
      * @return the persisted entity
      */
-    BusinessContactProfile save(BusinessContactProfile businessContactProfile);
+    BusinessContactProfileDTO save(BusinessContactProfileDTO businessContactProfileDTO);
 
     /**
      * Get all the businessContactProfiles.
      *
      * @return the list of entities
      */
-    List<BusinessContactProfile> findAll();
+    List<BusinessContactProfileDTO> findAll();
 
 
     /**
@@ -32,7 +32,7 @@ public interface BusinessContactProfileService {
      * @param id the id of the entity
      * @return the entity
      */
-    Optional<BusinessContactProfile> findOne(Long id);
+    Optional<BusinessContactProfileDTO> findOne(Long id);
 
     /**
      * Delete the "id" businessContactProfile.
@@ -40,4 +40,13 @@ public interface BusinessContactProfileService {
      * @param id the id of the entity
      */
     void delete(Long id);
+
+    /**
+     * Search for the businessContactProfile corresponding to the query.
+     *
+     * @param query the query of the search
+     * 
+     * @return the list of entities
+     */
+    List<BusinessContactProfileDTO> search(String query);
 }

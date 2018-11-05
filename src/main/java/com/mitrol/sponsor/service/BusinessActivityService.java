@@ -1,6 +1,6 @@
 package com.mitrol.sponsor.service;
 
-import com.mitrol.sponsor.domain.BusinessActivity;
+import com.mitrol.sponsor.service.dto.BusinessActivityDTO;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,10 +15,10 @@ public interface BusinessActivityService {
     /**
      * Save a businessActivity.
      *
-     * @param businessActivity the entity to save
+     * @param businessActivityDTO the entity to save
      * @return the persisted entity
      */
-    BusinessActivity save(BusinessActivity businessActivity);
+    BusinessActivityDTO save(BusinessActivityDTO businessActivityDTO);
 
     /**
      * Get all the businessActivities.
@@ -26,7 +26,7 @@ public interface BusinessActivityService {
      * @param pageable the pagination information
      * @return the list of entities
      */
-    Page<BusinessActivity> findAll(Pageable pageable);
+    Page<BusinessActivityDTO> findAll(Pageable pageable);
 
 
     /**
@@ -35,7 +35,7 @@ public interface BusinessActivityService {
      * @param id the id of the entity
      * @return the entity
      */
-    Optional<BusinessActivity> findOne(Long id);
+    Optional<BusinessActivityDTO> findOne(Long id);
 
     /**
      * Delete the "id" businessActivity.
@@ -43,4 +43,14 @@ public interface BusinessActivityService {
      * @param id the id of the entity
      */
     void delete(Long id);
+
+    /**
+     * Search for the businessActivity corresponding to the query.
+     *
+     * @param query the query of the search
+     * 
+     * @param pageable the pagination information
+     * @return the list of entities
+     */
+    Page<BusinessActivityDTO> search(String query, Pageable pageable);
 }

@@ -1,6 +1,6 @@
 package com.mitrol.sponsor.service;
 
-import com.mitrol.sponsor.domain.BusinessContact;
+import com.mitrol.sponsor.service.dto.BusinessContactDTO;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,10 +15,10 @@ public interface BusinessContactService {
     /**
      * Save a businessContact.
      *
-     * @param businessContact the entity to save
+     * @param businessContactDTO the entity to save
      * @return the persisted entity
      */
-    BusinessContact save(BusinessContact businessContact);
+    BusinessContactDTO save(BusinessContactDTO businessContactDTO);
 
     /**
      * Get all the businessContacts.
@@ -26,7 +26,7 @@ public interface BusinessContactService {
      * @param pageable the pagination information
      * @return the list of entities
      */
-    Page<BusinessContact> findAll(Pageable pageable);
+    Page<BusinessContactDTO> findAll(Pageable pageable);
 
 
     /**
@@ -35,7 +35,7 @@ public interface BusinessContactService {
      * @param id the id of the entity
      * @return the entity
      */
-    Optional<BusinessContact> findOne(Long id);
+    Optional<BusinessContactDTO> findOne(Long id);
 
     /**
      * Delete the "id" businessContact.
@@ -43,4 +43,14 @@ public interface BusinessContactService {
      * @param id the id of the entity
      */
     void delete(Long id);
+
+    /**
+     * Search for the businessContact corresponding to the query.
+     *
+     * @param query the query of the search
+     * 
+     * @param pageable the pagination information
+     * @return the list of entities
+     */
+    Page<BusinessContactDTO> search(String query, Pageable pageable);
 }

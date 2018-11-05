@@ -4,7 +4,8 @@
       "home": {
         "title": "Business Activities",
         "createLabel": "Create a new Business Activity",
-        "createOrEditLabel": "Create or edit a Business Activity"
+        "createOrEditLabel": "Create or edit a Business Activity",
+        "search": "Search for Business Activity"
       },
       "created": "A new Business Activity is created with identifier {{ param }}",
       "updated": "A Business Activity is updated with identifier {{ param }}",
