@@ -7,7 +7,8 @@ entity Sponsor {
     country String,
     phone String ,
     fax String,
-    homePage String
+    homePage String,
+    test String
 }
 
 entity BusinessActivity {
