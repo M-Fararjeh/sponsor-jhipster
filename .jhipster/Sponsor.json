@@ -39,6 +39,10 @@
         {
             "fieldName": "homePage",
             "fieldType": "String"
+        },
+        {
+            "fieldName": "test",
+            "fieldType": "String"
         }
     ],
     "relationships": [

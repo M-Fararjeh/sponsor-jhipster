@@ -26,6 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -77,6 +78,9 @@ public class SponsorResourceIntTest {
     private static final String DEFAULT_HOME_PAGE = "AAAAAAAAAA";
     private static final String UPDATED_HOME_PAGE = "BBBBBBBBBB";
 
+    private static final String DEFAULT_TEST = "AAAAAAAAAA";
+    private static final String UPDATED_TEST = "BBBBBBBBBB";
+
     @Autowired
     private SponsorRepository sponsorRepository;
 
@@ -85,7 +89,6 @@ public class SponsorResourceIntTest {
 
     @Autowired
     private SponsorMapper sponsorMapper;
-    
 
     @Mock
     private SponsorService sponsorServiceMock;
@@ -113,6 +116,9 @@ public class SponsorResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restSponsorMockMvc;
 
     private Sponsor sponsor;
@@ -125,7 +131,8 @@ public class SponsorResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -144,7 +151,8 @@ public class SponsorResourceIntTest {
             .country(DEFAULT_COUNTRY)
             .phone(DEFAULT_PHONE)
             .fax(DEFAULT_FAX)
-            .homePage(DEFAULT_HOME_PAGE);
+            .homePage(DEFAULT_HOME_PAGE)
+            .test(DEFAULT_TEST);
         return sponsor;
     }
 
@@ -178,6 +186,7 @@ public class SponsorResourceIntTest {
         assertThat(testSponsor.getPhone()).isEqualTo(DEFAULT_PHONE);
         assertThat(testSponsor.getFax()).isEqualTo(DEFAULT_FAX);
         assertThat(testSponsor.getHomePage()).isEqualTo(DEFAULT_HOME_PAGE);
+        assertThat(testSponsor.getTest()).isEqualTo(DEFAULT_TEST);
 
         // Validate the Sponsor in Elasticsearch
         verify(mockSponsorSearchRepository, times(1)).save(testSponsor);
@@ -244,9 +253,11 @@ public class SponsorResourceIntTest {
             .andExpect(jsonPath("$.[*].country").value(hasItem(DEFAULT_COUNTRY.toString())))
             .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE.toString())))
             .andExpect(jsonPath("$.[*].fax").value(hasItem(DEFAULT_FAX.toString())))
-            .andExpect(jsonPath("$.[*].homePage").value(hasItem(DEFAULT_HOME_PAGE.toString())));
+            .andExpect(jsonPath("$.[*].homePage").value(hasItem(DEFAULT_HOME_PAGE.toString())))
+            .andExpect(jsonPath("$.[*].test").value(hasItem(DEFAULT_TEST.toString())));
     }
     
+    @SuppressWarnings({"unchecked"})
     public void getAllSponsorsWithEagerRelationshipsIsEnabled() throws Exception {
         SponsorResource sponsorResource = new SponsorResource(sponsorServiceMock);
         when(sponsorServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
@@ -263,6 +274,7 @@ public class SponsorResourceIntTest {
         verify(sponsorServiceMock, times(1)).findAllWithEagerRelationships(any());
     }
 
+    @SuppressWarnings({"unchecked"})
     public void getAllSponsorsWithEagerRelationshipsIsNotEnabled() throws Exception {
         SponsorResource sponsorResource = new SponsorResource(sponsorServiceMock);
             when(sponsorServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
@@ -297,7 +309,8 @@ public class SponsorResourceIntTest {
             .andExpect(jsonPath("$.country").value(DEFAULT_COUNTRY.toString()))
             .andExpect(jsonPath("$.phone").value(DEFAULT_PHONE.toString()))
             .andExpect(jsonPath("$.fax").value(DEFAULT_FAX.toString()))
-            .andExpect(jsonPath("$.homePage").value(DEFAULT_HOME_PAGE.toString()));
+            .andExpect(jsonPath("$.homePage").value(DEFAULT_HOME_PAGE.toString()))
+            .andExpect(jsonPath("$.test").value(DEFAULT_TEST.toString()));
     }
 
     @Test
@@ -329,7 +342,8 @@ public class SponsorResourceIntTest {
             .country(UPDATED_COUNTRY)
             .phone(UPDATED_PHONE)
             .fax(UPDATED_FAX)
-            .homePage(UPDATED_HOME_PAGE);
+            .homePage(UPDATED_HOME_PAGE)
+            .test(UPDATED_TEST);
         SponsorDTO sponsorDTO = sponsorMapper.toDto(updatedSponsor);
 
         restSponsorMockMvc.perform(put("/api/sponsors")
@@ -350,6 +364,7 @@ public class SponsorResourceIntTest {
         assertThat(testSponsor.getPhone()).isEqualTo(UPDATED_PHONE);
         assertThat(testSponsor.getFax()).isEqualTo(UPDATED_FAX);
         assertThat(testSponsor.getHomePage()).isEqualTo(UPDATED_HOME_PAGE);
+        assertThat(testSponsor.getTest()).isEqualTo(UPDATED_TEST);
 
         // Validate the Sponsor in Elasticsearch
         verify(mockSponsorSearchRepository, times(1)).save(testSponsor);
@@ -410,15 +425,16 @@ public class SponsorResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(sponsor.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS.toString())))
-            .andExpect(jsonPath("$.[*].city").value(hasItem(DEFAULT_CITY.toString())))
-            .andExpect(jsonPath("$.[*].region").value(hasItem(DEFAULT_REGION.toString())))
-            .andExpect(jsonPath("$.[*].postalCode").value(hasItem(DEFAULT_POSTAL_CODE.toString())))
-            .andExpect(jsonPath("$.[*].country").value(hasItem(DEFAULT_COUNTRY.toString())))
-            .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE.toString())))
-            .andExpect(jsonPath("$.[*].fax").value(hasItem(DEFAULT_FAX.toString())))
-            .andExpect(jsonPath("$.[*].homePage").value(hasItem(DEFAULT_HOME_PAGE.toString())));
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)))
+            .andExpect(jsonPath("$.[*].city").value(hasItem(DEFAULT_CITY)))
+            .andExpect(jsonPath("$.[*].region").value(hasItem(DEFAULT_REGION)))
+            .andExpect(jsonPath("$.[*].postalCode").value(hasItem(DEFAULT_POSTAL_CODE)))
+            .andExpect(jsonPath("$.[*].country").value(hasItem(DEFAULT_COUNTRY)))
+            .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE)))
+            .andExpect(jsonPath("$.[*].fax").value(hasItem(DEFAULT_FAX)))
+            .andExpect(jsonPath("$.[*].homePage").value(hasItem(DEFAULT_HOME_PAGE)))
+            .andExpect(jsonPath("$.[*].test").value(hasItem(DEFAULT_TEST)));
     }
 
     @Test

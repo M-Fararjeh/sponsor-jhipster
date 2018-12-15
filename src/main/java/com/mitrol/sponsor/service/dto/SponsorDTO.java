@@ -32,6 +32,8 @@ public class SponsorDTO implements Serializable {
 
     private String homePage;
 
+    private String test;
+
     private Set<BusinessActivityDTO> businessActivities = new HashSet<>();
 
     public Long getId() {
@@ -114,6 +116,14 @@ public class SponsorDTO implements Serializable {
         this.homePage = homePage;
     }
 
+    public String getTest() {
+        return test;
+    }
+
+    public void setTest(String test) {
+        this.test = test;
+    }
+
     public Set<BusinessActivityDTO> getBusinessActivities() {
         return businessActivities;
     }
@@ -156,6 +166,7 @@ public class SponsorDTO implements Serializable {
             ", phone='" + getPhone() + "'" +
             ", fax='" + getFax() + "'" +
             ", homePage='" + getHomePage() + "'" +
+            ", test='" + getTest() + "'" +
             "}";
     }
 }

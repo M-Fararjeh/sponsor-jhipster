@@ -56,6 +56,9 @@ public class Sponsor implements Serializable {
     @Column(name = "home_page")
     private String homePage;
 
+    @Column(name = "test")
+    private String test;
+
     @OneToMany(mappedBy = "sponsor")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<BusinessContact> businessContacts = new HashSet<>();
@@ -192,6 +195,19 @@ public class Sponsor implements Serializable {
         this.homePage = homePage;
     }
 
+    public String getTest() {
+        return test;
+    }
+
+    public Sponsor test(String test) {
+        this.test = test;
+        return this;
+    }
+
+    public void setTest(String test) {
+        this.test = test;
+    }
+
     public Set<BusinessContact> getBusinessContacts() {
         return businessContacts;
     }
@@ -276,6 +292,7 @@ public class Sponsor implements Serializable {
             ", phone='" + getPhone() + "'" +
             ", fax='" + getFax() + "'" +
             ", homePage='" + getHomePage() + "'" +
+            ", test='" + getTest() + "'" +
             "}";
     }
 }

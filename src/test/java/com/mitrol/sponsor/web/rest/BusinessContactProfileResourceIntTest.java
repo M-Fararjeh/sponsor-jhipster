@@ -23,6 +23,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.util.Collections;
@@ -63,7 +64,7 @@ public class BusinessContactProfileResourceIntTest {
 
     @Autowired
     private BusinessContactProfileMapper businessContactProfileMapper;
-    
+
     @Autowired
     private BusinessContactProfileService businessContactProfileService;
 
@@ -87,6 +88,9 @@ public class BusinessContactProfileResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restBusinessContactProfileMockMvc;
 
     private BusinessContactProfile businessContactProfile;
@@ -99,7 +103,8 @@ public class BusinessContactProfileResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -304,10 +309,10 @@ public class BusinessContactProfileResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(businessContactProfile.getId().intValue())))
-            .andExpect(jsonPath("$.[*].attending").value(hasItem(DEFAULT_ATTENDING.toString())))
-            .andExpect(jsonPath("$.[*].retention").value(hasItem(DEFAULT_RETENTION.toString())))
-            .andExpect(jsonPath("$.[*].customerService").value(hasItem(DEFAULT_CUSTOMER_SERVICE.toString())))
-            .andExpect(jsonPath("$.[*].customerServiceSpecial").value(hasItem(DEFAULT_CUSTOMER_SERVICE_SPECIAL.toString())));
+            .andExpect(jsonPath("$.[*].attending").value(hasItem(DEFAULT_ATTENDING)))
+            .andExpect(jsonPath("$.[*].retention").value(hasItem(DEFAULT_RETENTION)))
+            .andExpect(jsonPath("$.[*].customerService").value(hasItem(DEFAULT_CUSTOMER_SERVICE)))
+            .andExpect(jsonPath("$.[*].customerServiceSpecial").value(hasItem(DEFAULT_CUSTOMER_SERVICE_SPECIAL)));
     }
 
     @Test
